@@ -136,11 +136,11 @@ app.get('/watchlist', (req, res) => {
     })
 })
 
-// app.post('/streamingAPI', async (req, res) => {
-//     options.params.title = req.body.title;
-//     const response = await axios.request(options);
-//     const results = response.data.result;
-//     res.json(results);
-// })
+app.post('/streamingAPI', async (req, res) => {
+    options.params.title = req.body.title;
+    const response = await axios.request(options);
+    const results = response.data.result;
+    res.json(results);
+})
 
 app.listen(4000);

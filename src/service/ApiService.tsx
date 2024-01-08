@@ -3,27 +3,19 @@ import Result from "../Result";
 import StreamingInfo from "../StreamingInfo";
 
 const fetchData = async (value: string) => {
- 
-  const options = {
-    method: "GET",
-    url: "https://streaming-availability.p.rapidapi.com/search/title",
-    params: {
-      title: value,
-      country: "fi",
-      show_type: "all",
-      output_language: "en",
-    },
-    headers: {
-      "X-RapidAPI-Key": your_api_key,
-      "X-RapidAPI-Host": "streaming-availability.p.rapidapi.com",
-    },
-  };
 
   try {
     console.log("API call")
-    const res = await axios.request(options);
-    console.log(res.data.result);
-    const results = res.data.result;
+    const response = await fetch('http://localhost:4000/streamingAPI', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ title: value })
+    });
+    
+    const results = await response.json();
     
     const newResults = results.map((res: any) => {
       let yearStart = 0;
