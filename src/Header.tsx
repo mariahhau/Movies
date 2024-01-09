@@ -47,7 +47,10 @@ export default function Header({ children }: Props) {
             <li className="nav-item">{children}</li>
             </ul>
             <ul className="navbar-nav ms-auto">
-            
+            <li className="nav-item">
+            <Link to="/about" className="nav-link">Info</Link>
+
+            </li>
             {username && (
               <>
                <li className="nav-item">

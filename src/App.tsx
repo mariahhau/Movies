@@ -5,6 +5,7 @@ import IndexPage from "./pages/IndexPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import WatchListPage from "./pages/WatchlistPage";
+import AboutPage from './pages/AboutPage';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/watchlist" element={<WatchListPage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Route>
       </Routes>
     </UserContextProvider>
