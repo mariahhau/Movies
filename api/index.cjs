@@ -9,8 +9,11 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require("dotenv").config({ path: "./config.env" })
 const axios = require("axios")
+const NodeCache = require('node-cache');
+const cache = new NodeCache();
 
 const apiKey = process.env.RAPIDAPI_KEY;
+let test = 0;
 
 const options = {
     method: "GET",
@@ -27,6 +30,16 @@ const options = {
     },
 };
 
+const optionsOMDB = {
+    method: "GET",
+    url: "http://www.omdbapi.com/",
+    params: {
+        apikey: process.env.OMDB_KEY,
+        t: "",
+        plot: "full",
+    },
+
+};
 
 const salt = bcrypt.genSaltSync(10);
 const secret = process.env.SECRET;
@@ -141,6 +154,30 @@ app.post('/streamingAPI', async (req, res) => {
     const response = await axios.request(options);
     const results = response.data.result;
     res.json(results);
+})
+
+app.get('/movieAPI/:title', async (req, res) => {
+    const title = new URLSearchParams(req.params.title).get("title");
+    optionsOMDB.params.t = title;
+    const cacheData = cache.get(title)
+
+    if (cacheData) {
+        console.log("using cache")
+        res.json(cacheData)
+    } else {
+        if (test < 50) {
+            console.log("fetch ")
+            test++;
+            const response = await axios.request(optionsOMDB);
+            const results = response.data;
+            cache.set(title, results)
+            res.json(results);
+        } else {
+            res.json("test");
+        }
+
+    }
+
 })
 
 app.listen(4000);
