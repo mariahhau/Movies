@@ -35,7 +35,7 @@ const optionsOMDB = {
     url: "http://www.omdbapi.com/",
     params: {
         apikey: process.env.OMDB_KEY,
-        t: "",
+        i: "",
         plot: "full",
     },
 
@@ -156,10 +156,11 @@ app.post('/streamingAPI', async (req, res) => {
     res.json(results);
 })
 
-app.get('/movieAPI/:title', async (req, res) => {
-    const title = new URLSearchParams(req.params.title).get("title");
-    optionsOMDB.params.t = title;
-    const cacheData = cache.get(title)
+app.get('/movieAPI/:id', async (req, res) => {
+    const imdbId = new URLSearchParams(req.params.id).get("id");
+    console.log(imdbId)
+    optionsOMDB.params.i = imdbId;
+    const cacheData = cache.get(imdbId)
 
     if (cacheData) {
         console.log("using cache")
@@ -170,8 +171,9 @@ app.get('/movieAPI/:title', async (req, res) => {
             test++;
             const response = await axios.request(optionsOMDB);
             const results = response.data;
-            cache.set(title, results)
+            cache.set(imdbId, results)
             res.json(results);
+            console.log(results)
         } else {
             res.json("test");
         }
