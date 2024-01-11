@@ -11,17 +11,19 @@ interface Props {
 function MovieCard ({item, onSelectItem, addButton}: Props) {
     const [selected, setSelected] = useState(false);
     const [description, setDescription] = useState("");
+    const [imageSrc, setImageSrc] = useState("");
 
     useEffect(() => {
        
         const fetchData = async () => {
           
-          const response = await fetch("http://localhost:4000/movieAPI/" + new URLSearchParams({"title": item.title}), {
+          const response = await fetch("http://localhost:4000/movieAPI/" + new URLSearchParams({"id": item.imdbId}), {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
           const json = await response.json();
             setDescription(json.Plot);
+            setImageSrc(json.Poster)
         }
        
         fetchData() 
@@ -67,7 +69,7 @@ function MovieCard ({item, onSelectItem, addButton}: Props) {
                     <div className="card text-white bg-primary mb-3">
                       <div className="row gx-1">
                         <div className="col-12 col-md-4">
-                          <img src="https://picsum.photos/300/200" alt="" className="card-img-top rounded-float-left" loading="lazy" />
+                          <img src={imageSrc} alt="" className={selected ? "card-img-top rounded-float-left" : "card-img-top rounded-float-left poster-closed"} loading="lazy" />
                         </div>
                         <div className="col">
                           <div className="card-body">
