@@ -28,7 +28,7 @@ function ListGroup({ items, heading, onSelectItem, children, addButton = false }
         {items.map((item, index) => {
           if (item != null)
             return (
-              <MovieCard item={item} />
+              <MovieCard item={item} addButton={addButton}/>
             )
         })}
 

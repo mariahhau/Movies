@@ -8,7 +8,7 @@ interface Props {
     addButton?: boolean;
 }
 
-function MovieCard ({item, onSelectItem, addButton}: Props) {
+function MovieCard ({item, onSelectItem, addButton=false}: Props) {
     const [selected, setSelected] = useState(false);
     const [description, setDescription] = useState("");
     const [imageSrc, setImageSrc] = useState("");
@@ -23,7 +23,7 @@ function MovieCard ({item, onSelectItem, addButton}: Props) {
         });
           const json = await response.json();
             setDescription(json.Plot);
-            setImageSrc(json.Poster)
+            setImageSrc("https://picsum.photos/200/300")//json.Poster)
         }
        
         fetchData() 
