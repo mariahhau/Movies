@@ -31,10 +31,12 @@ export default function IndexPage() {
       <SearchBar  setResults={setSearchResults} setTitle={setResultsTitle} /> </Header>
       <div className="col">
         <ListGroup
-          addButton={username ? true : false}
+          buttonType={username ? "add" : undefined}
           items={searchResults}
           heading={resultsTitle}
-          onSelectItem={handleSelectItem}>
+          onSelectItem={handleSelectItem}
+          buttonText="Lisää">
+          
           
         </ListGroup>
       </div>

@@ -7,10 +7,11 @@ interface Props {
   heading: string;
   onSelectItem?: (item: Result) => void;
   children?: ReactNode;
-  addButton?: boolean;
+  buttonText?: string;
+  buttonType?: "add" | "delete" | "watched"
 }
 
-function ListGroup({ items, heading, onSelectItem, children, addButton = false }: Props) {
+function ListGroup({ items, heading, onSelectItem, buttonType,buttonText="" }: Props) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const message =
     items.length === 0 ? <p>No item found (const message)</p> : null;
@@ -18,7 +19,6 @@ function ListGroup({ items, heading, onSelectItem, children, addButton = false }
   const getMessage = () => {
     return items.length === 0 ? <p>-</p> : null;
   };
-
 
   return (
     <>
@@ -28,7 +28,7 @@ function ListGroup({ items, heading, onSelectItem, children, addButton = false }
         {items.map((item, index) => {
           if (item != null)
             return (
-              <MovieCard item={item} addButton={addButton}/>
+              <MovieCard buttonType={buttonType} item={item} buttonText={buttonText}/>
             )
         })}
 

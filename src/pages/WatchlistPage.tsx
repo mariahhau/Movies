@@ -2,7 +2,7 @@ import SearchBar from "../components/SearchBar"
 import ListGroup from "../components/ListGroup"
 import { useContext, useState, useEffect } from "react";
 import Result from "../Result";
-import MyButton from "../components/MyButton";
+import CardButton from "../components/CardButton";
 import { UserContext } from "../UserContext";
 import Header from "../Header";
 
@@ -14,6 +14,7 @@ export default function WatchListPage() {
 
   useEffect(() => {
 
+    
     getList();
 
   }, []);
@@ -41,6 +42,8 @@ export default function WatchListPage() {
       <ListGroup
         items={watchList}
         heading="Oma lista"
+        buttonType="delete"
+        buttonText="Poista"
       >
       </ListGroup>
     </div>
