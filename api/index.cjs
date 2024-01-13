@@ -12,8 +12,10 @@ const axios = require("axios")
 const NodeCache = require('node-cache');
 const cache = new NodeCache();
 
+const fetchOMDB = true;
+const fetchStrAvApi = true;
 const apiKey = process.env.RAPIDAPI_KEY;
-let test = 0;
+let limit = 0;
 
 const options = {
     method: "GET",
@@ -130,6 +132,32 @@ app.post('/saved', (req, res) => {
 
 });
 
+app.delete('/saved', (req, res) => {
+    const { token } = req.cookies;
+    console.log(token, " delete")
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) console.log(err); //throw err
+        const {imdbId} = req.body;
+
+        let showInfo;
+        if (await Show.exists({ imdbId })) {
+            showInfo = await Show.findOne({ imdbId: imdbId })
+        }
+
+        const user = await User.findById(info.id);
+        let saved = user.savedShows;
+
+        if (saved.includes(showInfo._id)) {
+            const i = saved.indexOf(showInfo._id)
+            saved.splice(i, i)
+            await user.updateOne({ savedShows: saved })
+        }
+        res.json(showInfo)
+
+    })
+
+});
 
 app.get('/watchlist', (req, res) => {
     const { token } = req.cookies;
@@ -144,12 +172,13 @@ app.get('/watchlist', (req, res) => {
             return Show.findById(id);
 
         }));
-        console.log(data)
         res.json(data)
     })
 })
 
 app.post('/streamingAPI', async (req, res) => {
+    if (!fetchStrAvApi) return;
+    console.log("Fetch Streaming Availability API")
     options.params.title = req.body.title;
     const response = await axios.request(options);
     const results = response.data.result;
@@ -162,22 +191,24 @@ app.get('/movieAPI/:id', async (req, res) => {
     optionsOMDB.params.i = imdbId;
     const cacheData = cache.get(imdbId)
 
-    if (cacheData) {
-        console.log("using cache")
-        res.json(cacheData)
+    if (!fetchOMDB) {
+        res.json({ Plot: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." });
     } else {
-        if (test < 50) {
-            console.log("fetch ")
-            test++;
-            const response = await axios.request(optionsOMDB);
-            const results = response.data;
-            cache.set(imdbId, results)
-            res.json(results);
-            console.log(results)
+        if (cacheData) {
+            console.log("using cache")
+            res.json(cacheData)
         } else {
-            res.json("test");
-        }
+            if (limit < 50) {
+                console.log("Fetch OMDB")
+                limit++;
+                const response = await axios.request(optionsOMDB);
+                const results = response.data;
+                cache.set(imdbId, results)
+                res.json(results);
+                console.log(results)
+            }
 
+        }
     }
 
 })
