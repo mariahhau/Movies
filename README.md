@@ -4,8 +4,8 @@ A web application for looking up movies and series to find out which streaming s
 Uses [Streaming Availability API](https://www.movieofthenight.com/about/api) and
 [OMDb API](https://www.omdbapi.com/) 
 
-Current, in development version looks like this:
-![](https://github.com/mariahhau/Movies/blob/main/assets/Screenshot1.png)
+Current version looks like this:
 
 
-Images fetched using [Lorem Picsum](https://picsum.photos/)
+https://github.com/mariahhau/Movies/assets/135694401/10c78578-72a9-4449-9641-b70693aaa2c5
+
