@@ -1,14 +1,13 @@
-import { UserContextProvider } from './UserContext';
-import { Route, Routes } from 'react-router-dom';
+import { UserContextProvider } from "./UserContext";
+import { Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
 import IndexPage from "./pages/IndexPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import WatchListPage from "./pages/WatchlistPage";
-import AboutPage from './pages/AboutPage';
+import AboutPage from "./pages/AboutPage";
 
 function App() {
-
   return (
     <UserContextProvider>
       <Routes>
