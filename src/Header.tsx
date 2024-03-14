@@ -13,8 +13,11 @@ export default function Header({ children }: Props) {
       credentials: "include",
     }).then((response) => {
       response.json().then((userInfo) => {
-        console.log("setUserInfo ", userInfo);
-        setUserInfo(userInfo);
+        if (userInfo.hasOwnProperty("username")) {
+          setUserInfo(userInfo);
+        } else {
+          setUserInfo(null);
+        }
       });
     });
   }, []);
