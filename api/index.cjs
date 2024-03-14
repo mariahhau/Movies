@@ -13,7 +13,7 @@ const NodeCache = require("node-cache");
 const omdbCache = new NodeCache();
 const streamingCache = new NodeCache();
 
-const fetchOMDB = true;
+const fetchOMDB = false;
 const fetchStreamingApi = true;
 const apiKey = process.env.RAPIDAPI_KEY;
 let limit = 0;
@@ -72,13 +72,18 @@ app.post("/login", async (req, res) => {
   const passOk = bcrypt.compareSync(password, userDoc.password);
 
   if (passOk) {
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      res.cookie("token", token).json({
-        id: userDoc._id,
-        username,
-      });
-    });
+    jwt.sign(
+      { username: username, id: userDoc._id },
+      secret,
+      { expiresIn: "1h" },
+      (err, token) => {
+        if (err) throw err;
+        res.cookie("token", token).json({
+          id: userDoc._id,
+          username,
+        });
+      }
+    );
   } else {
     res.status(400).json("wrong credentials");
   }
@@ -87,10 +92,15 @@ app.post("/login", async (req, res) => {
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
 
-  jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw err;
-    res.json(info);
-  });
+  if (!token) {
+    console.log("token is null");
+    res.status(200).json("not logged in");
+  } else {
+    jwt.verify(token, secret, {}, (err, info) => {
+      if (err) console.log(err); //throw err;
+      res.json(info);
+    });
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -210,7 +220,7 @@ app.post("/streamingAPI", async (req, res) => {
 
 app.get("/movieAPI/:id", async (req, res) => {
   const imdbId = new URLSearchParams(req.params.id).get("id");
-  console.log(imdbId);
+  console.log("/movieAPI/:id ", imdbId);
   optionsOMDB.params.i = imdbId;
   const cacheData = omdbCache.get(imdbId);
 
