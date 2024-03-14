@@ -7,15 +7,24 @@ interface Props {
   onSelectItem?: (item: Result) => void;
   buttonType?: "add" | "delete" | "watched";
   buttonText?: string;
+  view: boolean;
 }
 
-function MovieCard({ item, onSelectItem, buttonType, buttonText = "" }: Props) {
+function MovieCard({
+  item,
+  onSelectItem,
+  buttonType,
+  buttonText = "",
+  view,
+}: Props) {
   const [selected, setSelected] = useState(false);
   const [description, setDescription] = useState("");
   const [imageSrc, setImageSrc] = useState("");
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
+    console.log("MovieCard view=", view);
+    if (!view) return;
     const fetchData = async () => {
       const response = await fetch(
         "http://localhost:4000/movieAPI/" +
@@ -31,7 +40,7 @@ function MovieCard({ item, onSelectItem, buttonType, buttonText = "" }: Props) {
     };
 
     fetchData().catch(console.error);
-  }, []);
+  }, [view]);
 
   const getShortDescription = function () {
     let i = description.length >= 200 ? 200 : description.length;
@@ -108,18 +117,20 @@ function MovieCard({ item, onSelectItem, buttonType, buttonText = "" }: Props) {
         <div className="col">
           <div className="card text-white bg-primary mb-3">
             <div className="row gx-1">
-              <div className="col-12 col-md-4">
-                <img
-                  src={imageSrc}
-                  alt=""
-                  className={
-                    selected
-                      ? "card-img-top rounded-float-left"
-                      : "card-img-top rounded-float-left poster-closed"
-                  }
-                  loading="lazy"
-                />
-              </div>
+              {(view == true || selected) && (
+                <div className="col-12 col-md-4">
+                  <img
+                    src={imageSrc}
+                    alt=""
+                    className={
+                      selected
+                        ? "card-img-top rounded-float-left"
+                        : "card-img-top rounded-float-left poster-closed"
+                    }
+                    loading="lazy"
+                  />
+                </div>
+              )}
               <div className="col">
                 <div className="card-body">
                   <h5 className="card-title">{item.title}</h5>
@@ -127,10 +138,11 @@ function MovieCard({ item, onSelectItem, buttonType, buttonText = "" }: Props) {
                     {" "}
                     {item.startYear + "-" + item.endYear + " " + item.type}
                   </h6>
-                  <p className="card-text">
-                    {selected ? description : getShortDescription()}
-                  </p>
-                  <p className="fs-6">Katsottavissa:</p>
+                  {(view == true || selected) && (
+                    <p className="card-text">
+                      {selected ? description : getShortDescription()}
+                    </p>
+                  )}
                   <ul className="list-group list-group-horizontal">
                     {item.streamingInfo.length > 0
                       ? getStreamingInfo(item).map((item: any) => (
