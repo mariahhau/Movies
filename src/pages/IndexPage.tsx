@@ -1,5 +1,5 @@
 import SearchBar from "../components/SearchBar";
-import ListGroup from "../components/ListGroup";
+import MovieList from "../components/MovieList";
 import { useContext, useEffect, useState } from "react";
 import Result from "../Result";
 import { UserContext } from "../UserContext";
@@ -35,16 +35,16 @@ export default function IndexPage() {
         />
       </Header>
       <div className="col">
-        <ListGroup
+        <MovieList
           buttonType={username ? "add" : undefined}
           items={searchResults}
           heading={resultsTitle}
           onSelectItem={handleSelectItem}
           buttonText="Lisää"
-        ></ListGroup>
+        ></MovieList>
       </div>
 
-      <ListGroup items={clickHistory} heading="Aiemmin katsellut" />
+      {/* <MovieList items={clickHistory} heading="Aiemmin katsellut" /> */}
     </>
   );
 }
