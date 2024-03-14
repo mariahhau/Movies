@@ -58,3 +58,8 @@ input::placeholder {
     top: 0;
    
 }
+ 
+
+.watchListTitle {
+    display: inline-flex;
+}
