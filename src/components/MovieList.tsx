@@ -75,62 +75,72 @@ function MovieList({
   return (
     <>
       <h1 className="p-2">{heading}</h1>
-      <button
-        className={"btn btn-primary "}
-        onClick={(e) => setCardView(!cardView)}
-        style={{ margin: 2 }}
-      >
-        {cardView ? `Piilota lisätiedot` : `Näytä lisätiedot`}
-      </button>
-
-      <div>
-        <label>
-          <input
-            className=""
-            type="checkbox"
-            value={"movies"}
-            checked={moviesChecked}
-            onChange={handleTypeChange}
-          />
-          Elokuvat
-        </label>
-        <label>
-          <input
-            className=""
-            type="checkbox"
-            value={"series"}
-            checked={seriesChecked}
-            onChange={handleTypeChange}
-          />
-          Sarjat
-        </label>
-        <div className="btn-group">
+      {items.length > 0 ? (
+        <div>
           <button
-            className="btn btn-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            data-bs-auto-close="outside"
-            aria-expanded="false"
+            className={"btn btn-primary "}
+            onClick={(e) => setCardView(!cardView)}
+            style={{ margin: 2 }}
           >
-            Palvelut
+            {cardView ? `Piilota lisätiedot` : `Näytä lisätiedot`}
           </button>
-          <ul className="dropdown-menu">
-            {Object.keys(platforms).map((key) => (
-              <li key={key}>
-                <button
-                  onClick={handlePlatformClick}
-                  className={"dropdown-item"}
-                  type="button"
-                  value={key}
-                >
-                  {key}{" "}
-                  {platforms[key as keyof serviceFilter] ? <>&#9989;</> : ""}
-                </button>
-              </li>
-            ))}
-          </ul>
+
+          <div>
+            <label>
+              <input
+                className=""
+                type="checkbox"
+                value={"movies"}
+                checked={moviesChecked}
+                onChange={handleTypeChange}
+              />
+              Elokuvat
+            </label>
+            <label>
+              <input
+                className=""
+                type="checkbox"
+                value={"series"}
+                checked={seriesChecked}
+                onChange={handleTypeChange}
+              />
+              Sarjat
+            </label>
+            <div className="btn-group">
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-expanded="false"
+              >
+                Palvelut
+              </button>
+              <ul className="dropdown-menu">
+                {Object.keys(platforms).map((key) => (
+                  <li key={key}>
+                    <button
+                      onClick={handlePlatformClick}
+                      className={"dropdown-item"}
+                      type="button"
+                      value={key}
+                    >
+                      {key}{" "}
+                      {platforms[key as keyof serviceFilter] ? (
+                        <>&#9989;</>
+                      ) : (
+                        ""
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
 
       <ul className="list-group list-group-flush">
         {getMessage()}
