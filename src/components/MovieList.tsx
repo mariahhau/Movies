@@ -36,10 +36,11 @@ function MovieList({
   buttonText = "",
 }: Props) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [cardView, setCardView] = useState(false);
+  const [cardView, setCardView] = useState(true);
   const [moviesChecked, setMoviesChecked] = useState(true);
   const [seriesChecked, setSeriesChecked] = useState(true);
   const [platforms, setPlatforms] = useState({
+    unknown: true,
     apple: true,
     curiosity: true,
     disney: true,
@@ -159,6 +160,7 @@ function MovieList({
             console.log("item ", item);
             return (
               <MovieCard
+                key={item.imdbId}
                 buttonType={buttonType}
                 item={item}
                 buttonText={buttonText}
@@ -183,6 +185,12 @@ const filterCard = (
   const checkedServices = Object.keys(platformF).filter(
     (key) => platformF[key as keyof serviceFilter] === true
   );
+
+  if (item.streamingInfo.length == 0) {
+    if (checkedServices.includes("unknown")) {
+      return true;
+    }
+  }
 
   if (
     item.streamingInfo.find((streamingInfo) =>
