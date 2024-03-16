@@ -12,8 +12,40 @@ const axios = require("axios");
 const NodeCache = require("node-cache");
 const omdbCache = new NodeCache();
 const streamingCache = new NodeCache();
+const fs = require("fs");
+const schedule = require("node-schedule");
+let apiCalls = 0;
+let lastUpdate = 0;
+let lastReset = 0;
 
-const fetchOMDB = false;
+//Reset statistics at midnight
+const job = schedule.scheduleJob("0 0 * * *", function () {
+  resetStats();
+});
+
+const resetStats = () => {
+  apiCalls = 0;
+  lastReset = new Date().setHours(0, 0, 0, 0);
+  console.log(lastReset, lastReset.toString());
+  lastUpdate = Date.now();
+  const reset = `${apiCalls},${Date.now()},${lastReset}`;
+  fs.writeFile("apiStats.csv", reset, (err) => {
+    if (err) return console.log(err);
+    console.log("resetting file");
+  });
+};
+
+fs.readFile("apiStats.csv", "UTF8", function (err, data) {
+  if (err) {
+    throw err;
+  }
+  [apiCalls, lastUpdate, lastReset] = data.split(",").map(Number);
+  if (Date.now() - lastReset > 1000 * 60 * 60 * 24) {
+    resetStats();
+  }
+});
+
+const fetchOMDB = true;
 const fetchStreamingApi = true;
 const apiKey = process.env.RAPIDAPI_KEY;
 let limit = 0;
@@ -97,7 +129,11 @@ app.get("/profile", (req, res) => {
     res.status(200).json("not logged in");
   } else {
     jwt.verify(token, secret, {}, (err, info) => {
-      if (err) console.log(err); //throw err;
+      if (err) {
+        console.log(err); //throw err;
+        res.json("token expired");
+      }
+      console.log(info);
       res.json(info);
     });
   }
@@ -203,19 +239,38 @@ app.get("/watchlist", (req, res) => {
 
 app.post("/streamingAPI", async (req, res) => {
   if (!fetchStreamingApi) return;
+
   const cacheData = streamingCache.get(req.body.title);
 
   if (cacheData) {
-    console.log("using streaming data cache");
+    console.log("using streaming data cache: ", req.body.title);
+
     res.json(cacheData);
-  } else {
-    console.log("Fetch Streaming Availability API");
+  } else if (apiCalls < 100) {
+    console.log("Fetch Streaming Availability API: ", req.body.title);
+
+    apiCalls += 1;
+    lastUpdate = Date.now();
+
+    const newData = `${apiCalls},${Date.now()},${lastReset}`;
+    fs.writeFile("apiStats.csv", newData, (err) => {
+      if (err) return console.log(err);
+      console.log("writing to file");
+    });
+
     optionsStreaming.params.title = req.body.title;
     const response = await axios.request(optionsStreaming);
     const results = response.data.result;
     streamingCache.set(req.body.title, results);
+
     res.json(results);
+  } else {
+    res.json({ error: "too many requests" });
   }
+});
+
+app.get("/stats", (req, res) => {
+  res.json({ calls: apiCalls, time: lastUpdate });
 });
 
 app.get("/movieAPI/:id", async (req, res) => {
@@ -233,7 +288,7 @@ app.get("/movieAPI/:id", async (req, res) => {
       console.log("using omdb cache");
       res.json(cacheData);
     } else {
-      if (limit < 50) {
+      if (limit < 500) {
         console.log("Fetch OMDB");
         limit++;
         const response = await axios.request(optionsOMDB);
