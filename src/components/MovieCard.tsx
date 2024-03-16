@@ -36,7 +36,7 @@ function MovieCard({
       );
       const json = await response.json();
       setDescription(json.Plot);
-      setImageSrc("https://picsum.photos/200/300"); //json.Poster)
+      setImageSrc(json.Poster); //"https://picsum.photos/200/300"); //json.Poster)
     };
 
     fetchData().catch(console.error);
@@ -146,7 +146,7 @@ function MovieCard({
                   <ul className="list-group list-group-horizontal">
                     {item.streamingInfo.length > 0
                       ? getStreamingInfo(item).map((item: any) => (
-                          <li className="list-group-item" key={item.service}>
+                          <li key={item.service} className="list-group-item">
                             <a href={item.link}>{item.service}</a>
                           </li>
                         ))
@@ -189,7 +189,7 @@ const msToDHMS = function (ms: number) {
 };
 
 const formatDHMS = function (dhms: string) {
-  console.log(dhms);
+  //console.log(dhms);
   const parts = dhms.split(":", 4);
   const text = ["päivää", "tuntia ", "minuuttia", "sekuntia"];
 
