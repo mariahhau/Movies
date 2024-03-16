@@ -48,11 +48,6 @@ const fetchData = async (value: string) => {
         Date.now().toString()
       );
 
-      const oldCache = JSON.parse(localStorage.getItem("cached") || "[]");
-      oldCache.push(r);
-
-      localStorage.setItem("cached", JSON.stringify(oldCache));
-
       return r;
     });
 
