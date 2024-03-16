@@ -18,6 +18,8 @@ interface TypeFilter {
 }
 
 interface serviceFilter {
+  all: boolean;
+  unknown: boolean;
   apple: boolean;
   curiosity: boolean;
   disney: boolean;
@@ -40,6 +42,7 @@ function MovieList({
   const [moviesChecked, setMoviesChecked] = useState(true);
   const [seriesChecked, setSeriesChecked] = useState(true);
   const [platforms, setPlatforms] = useState({
+    all: true,
     unknown: true,
     apple: true,
     curiosity: true,
@@ -62,6 +65,14 @@ function MovieList({
   const handlePlatformClick = (event: any) => {
     console.log(event, event.target);
     const key = event.target.value as keyof serviceFilter;
+    if (key === "all") {
+      const stateCopy = { ...platforms };
+      Object.keys(stateCopy).forEach((key) => {
+        stateCopy[key as keyof serviceFilter] = !platforms.all;
+      });
+      setPlatforms(stateCopy);
+      return;
+    }
     const stateCopy = { ...platforms, [key]: !platforms[key] };
     setPlatforms(stateCopy);
   };
@@ -126,8 +137,13 @@ function MovieList({
                       type="button"
                       value={key}
                     >
-                      {key}{" "}
-                      {platforms[key as keyof serviceFilter] ? (
+                      {key !== "all"
+                        ? key
+                        : platforms.all
+                        ? "Poista valinnat"
+                        : "Valitse kaikki"}{" "}
+                      {platforms[key as keyof serviceFilter] &&
+                      key !== "all" ? (
                         <>&#9989;</>
                       ) : (
                         ""
