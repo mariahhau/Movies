@@ -106,7 +106,10 @@ function MovieCard({
       className={selected ? "list-group-item active" : "list-group-item"}
       key={item.imdbId}
       onClick={(e) => {
-        if (e.target instanceof HTMLButtonElement == false) {
+        if (
+          e.target instanceof HTMLButtonElement == false &&
+          e.target instanceof HTMLAnchorElement == false
+        ) {
           setSelected(!selected);
         }
         if (onSelectItem) onSelectItem(item);
