@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../UserContext";
 
 interface Props {
   children?: ReactNode;

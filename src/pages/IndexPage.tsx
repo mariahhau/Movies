@@ -3,7 +3,7 @@ import MovieList from "../components/MovieList";
 import { useContext, useEffect, useState } from "react";
 import Result from "../Result";
 import { UserContext } from "../UserContext";
-import Header from "../Header";
+import Header from "../components/Header";
 import { useSearchParams } from "react-router-dom";
 import Statistics, { Statistic } from "../components/Statistics";
 import axios from "axios";

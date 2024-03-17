@@ -1,7 +1,7 @@
 import ListGroup from "../components/MovieList";
 import { useState, useEffect } from "react";
 import Result from "../Result";
-import Header from "../Header";
+import Header from "../components/Header";
 
 export default function WatchListPage() {
   // const { setUserInfo, userInfo } = useContext(UserContext);
